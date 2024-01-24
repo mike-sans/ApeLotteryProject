@@ -1,0 +1,15 @@
+# Ape stuff
+.build/
+.cache/
+
+# Python
+.env
+.envrc
+.venv
+.pytest_cache
+.python-version
+__pycache__
+node_modules
+
+# Notes
+commonCommands.zsh

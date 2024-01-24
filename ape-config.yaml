@@ -1,0 +1,42 @@
+name: Lottery
+plugins:
+- name: solidity
+- name: infura
+- name: networks
+- name: test
+
+ethereum:
+  default_network: mainnet-fork
+  mainnet: 
+    default_provider: infura
+  mainnet_fork:
+    default_provider: foundry
+  goerli:
+    default_provider: infura
+  sepolia:
+    default_provider: infura
+  local:
+    default_provider: test
+
+foundry:
+  host: http://localhost:8545
+  fork:
+    ethereum:
+      mainnet:
+        upstream_provider: infura
+
+deployments:
+  ethereum:
+    mainnet:
+      - contract_type: AggregatorV3Interface
+        address: "0x5f4ec3df9cbd43714fe2740f5e3616155c5b8419"
+    mainnet-fork:
+      - contract_type: AggregatorV3Interface
+        address: "0x5f4ec3df9cbd43714fe2740f5e3616155c5b8419"
+    sepolia:
+      - contract_type: AggregatorV3Interface
+        address: "0x694AA1769357215DE4FAC081bf1f309aDC325306"
+    
+test:
+  mnemonic: test test test test test test test test test test test junk
+  number_of_accounts: 5
