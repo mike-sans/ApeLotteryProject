@@ -15,7 +15,7 @@ def deploy_lottery(daccount=False):
     publishStat = True
     if networks.active_provider.network.name in ("local", "mainnet-fork"):
         publishStat = False
-    lottery = project.Lottery.deploy(
+    lottery = project.LotteryCaR.deploy(
         price_feed.address, sender=daccount, publish=publishStat
     )
     print(f"Contract deployed to {lottery.address}")
@@ -26,7 +26,7 @@ def open_lottery(oaccount=False):
     if not oaccount:
         oaccount = get_account()[0]
 
-    lottery = project.Lottery.deployments[-1]
+    lottery = project.LotteryCaR.deployments[-1]
     tx = lottery.startLottery(sender=oaccount)
     tx.await_confirmations()
     print(f"Contract entered, txn receipt:{tx}")
@@ -37,7 +37,7 @@ def open_lottery(oaccount=False):
 def enter_lottery(faccount=False, entrance_fee=False):
     if not faccount:
         faccount = get_account()[1]
-    lottery = project.Lottery.deployments[-1]
+    lottery = project.LotteryCaR.deployments[-1]
     if not entrance_fee:
         entrance_fee = lottery.getEntranceFee() + 100
     tx = lottery.enter(sender=faccount, value=entrance_fee)
@@ -46,7 +46,7 @@ def enter_lottery(faccount=False, entrance_fee=False):
 
 
 def get_lottery_status():
-    lottery = project.Lottery.deployments[-1]
+    lottery = project.LotteryCaR.deployments[-1]
     status_value = lottery.openStatus()
     status_name = OPEN_STATE_MAPPING.get(status_value, "Unknown")
     if status_value == 2:
@@ -61,7 +61,7 @@ def get_lottery_status():
 def end_lottery(eaccount=False):
     if not eaccount:
         eaccount = get_account()[0]
-    lottery = project.Lottery.deployments[-1]
+    lottery = project.LotteryCaR.deployments[-1]
     winner = lottery.endLottery(sender=eaccount)
     print(f"Contract withdrawn from, txn receipt:{winner.txn_hash}")
     return winner.return_value

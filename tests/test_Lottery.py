@@ -1,7 +1,7 @@
 import pytest
 from ape import accounts, project, networks, exceptions
 from scripts.helpfulScripts import *
-from scripts.LotteryInteract import *
+from scripts.LotteryCaRInteract import *
 
 # from scripts.FundMeInteract import deploy_fund_me, fund_fund_me, withdraw_fund_me
 
@@ -60,7 +60,7 @@ def test_LotteryFund(owner, receiver, receiver2):
     ):
         pytest.skip("Only for local/forked testing")
 
-    lottery = project.Lottery.deployments[-1]
+    lottery = project.LotteryCaR.deployments[-1]
 
 
 # // TODO

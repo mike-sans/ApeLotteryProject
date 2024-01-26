@@ -12,5 +12,6 @@ __pycache__
 node_modules
 
 # Notes
-commonCommands.zsh
+commonCommands.md
 notes.md
+LotteryProject\ node\ D4.md

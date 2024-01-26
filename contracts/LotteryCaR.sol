@@ -2,7 +2,9 @@
 pragma solidity >=0.6.6 <0.9.0;
 import "./interfaces/AggregatorV3Interface.sol";
 
-contract Lottery {
+contract LotteryCaR {
+    // probably better to not have this array be payable, just to be extra secure
+    // address payable[] public players;
     address[] public players;
     address owner;
     AggregatorV3Interface public priceFeed;
@@ -11,8 +13,9 @@ contract Lottery {
     address public winner;
 
     enum OPEN_STATE {
-        OPEN,
         CLOSED,
+        OPEN,
+        PENDING_REVEAL,
         PENDING_WINNER_WITHDRAW
     }
     OPEN_STATE public openStatus = OPEN_STATE.CLOSED;

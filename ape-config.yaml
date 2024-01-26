@@ -25,6 +25,19 @@ foundry:
       mainnet:
         upstream_provider: infura
 
+solidity: 
+  import_remapping:
+    - "@openzeppelin=OpenZeppelin/5.0.1"
+    - "@chainlink=smartcontractkit/2.8.0"
+
+dependencies:
+  - name: OpenZeppelin
+    github: OpenZeppelin/openzeppelin-contracts
+    version: 5.0.1
+  - name: smartcontractkit
+    github: smartcontractkit/chainlink
+    version: 2.8.0
+
 deployments:
   ethereum:
     mainnet:
@@ -36,6 +49,12 @@ deployments:
     sepolia:
       - contract_type: AggregatorV3Interface
         address: "0x694AA1769357215DE4FAC081bf1f309aDC325306"
+      - contract_type: vrf_coordinator
+        address: "0x8103B0A8A00be2DDC778e6e7eaa21791Cd364625"
+      - contract_type: link_token
+        address: "0x779877A7B0D9E8603169DdbD7836e478b4624789"
+      - contract_type: keyhash
+        address: "0x474e34a077df58807dbe9c96d3c009b23b3c6d0cce433e59bbf5b34f823bc56c"
     
 test:
   mnemonic: test test test test test test test test test test test junk
