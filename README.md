@@ -26,11 +26,11 @@ Typically, in a bare bones commit and reveal mechanism, the so called last-mover
 
 One significant exploit is if players collude with one another. For example if there are 10 players and four of them decide to cheat by working together, they could wait til the other 6 reveal and then the four on the cheating team could choose who of them should reveal, doing intermediate calculations to see which if any combination of their reveals/non-reveals lets one of their teammates win the prize. For n teammates colluding, they would have 2^n options for how to reveal (reveal or not reveal for each of the n teammates). Depending on the stake to entry_fee ratio, the number of teammates forgoing their stakes, and the ratio of teammates to non-teammates, it may end up being profitable for the team to forego at least one team member's stake to be able to ensure the winner is one of the team members:
 
-The pay out (entry_fee*total_players) has to be greater than the cost/loss to the team (entry_fee*total_teammates+stake*foregoing_teammates) for it to be worth it to forego a (or multiple) yield(s) and not reveal at least one of the teammates secret numbers.
+The pay out (entry_fee * total_players) has to be greater than the cost/loss to the team (entry_fee * total_teammates + stake * foregoing_teammates) for it to be worth it to forego a (or multiple) yield(s) and not reveal at least one of the teammates secret numbers.
 
-In other words, if stake = x * entry_fee, then (by dividing both sides by entry_fee) we get that total_players must be >= (total_teammates+x*forgoing_teammates) for cheating to be profitable.
+In other words, if stake = x * entry_fee, then (by dividing both sides by entry_fee) we get that total_players must be >= (total_teammates + x * forgoing_teammates) for cheating to be profitable.
 
-For a conservative estimate of how large x needs to be to make cheating never profitable, we can ignore the total_teammates term and just require that (x*foregoing_teammates) > total_players. At minimum, foregoing_teammates must be at least 1, otherwise the result of the lottery is the correct/valid conclusion of the lottery where all players reveal their secret numbers.
+For a conservative estimate of how large x needs to be to make cheating never profitable, we can ignore the total_teammates term and just require that (x * foregoing_teammates) > total_players. At minimum, foregoing_teammates must be at least 1, otherwise the result of the lottery is the correct/valid conclusion of the lottery where all players reveal their secret numbers.
 
 To ensure it would never be worth cheating, you would therefore just have to make sure the staking-to-entry-fee factor (x) is > total_players. For example, a lottery with a maximum of 9 players, a staking deposit of 0.5 ETH, and a entry-fee of 0.05 ETH would be completely protected from all of the mentioned vulnerabilities in this section.
 
