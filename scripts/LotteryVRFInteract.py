@@ -18,12 +18,15 @@ def deploy_lottery(daccount=False):
         daccount[0].set_autosign(True)
 
     # this will get info from chainlink or deploy a mock chain if in a test network
-    price_feed = get_or_deploy_contract("AggregatorV3Interface")
+    aggregatorAddress = get_or_deploy_contract("AggregatorV3Interface")
+    linkTokenAddress = get_or_deploy_contract("")
+    vrfWrapperAddress = get_or_deploy_contract("VRFV2WrapperInterface")
+
     publishStat = True
     if networks.active_provider.network.name in ("local", "mainnet-fork"):
         publishStat = False
     lottery = project.Lottery.deploy(
-        price_feed.address, sender=daccount, publish=publishStat
+        aggregatorAddress, sender=daccount, publish=publishStat
     )
     print(f"Contract deployed to {lottery.address}")
     return lottery

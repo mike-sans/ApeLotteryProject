@@ -15,7 +15,7 @@ FORKED_CHAIN_NAMES = ["mainnet-fork"]
 CONTRACT_NAME_TO_MOCK = {
     "AggregatorV3Interface": project.MockV3Aggregator,
     "VRFCoordinator": project.VRFCoordinatorMock,
-    "VRFV2WrapperInterface": project.VRFWrapperMock,
+    "VRFV2Wrapper": project.VRFWrapperMock,
     "LinkToken": project.LinkToken,
 }
 
