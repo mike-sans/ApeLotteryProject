@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.6.6 <0.9.0;
-import "./interfaces/AggregatorV3Interface.sol";
+pragma solidity ^0.8.0;
+import "@chainlink/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
 
 contract LotteryCaR {
     // probably better to not have this array be payable, just to be extra secure

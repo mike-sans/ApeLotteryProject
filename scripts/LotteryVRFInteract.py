@@ -3,7 +3,12 @@
 from ape import networks, accounts, project
 from scripts.helpfulScripts import *
 
-OPEN_STATE_MAPPING = {0: "OPEN", 1: "CLOSED", 2: "PENDING_WINNER_WITHDRAW"}
+OPEN_STATE_MAPPING = {
+    0: "CLOSED",
+    1: "OPEN",
+    2: "CALCULATING_WINNER",
+    3: "PENDING_WINNER_WITHDRAW",
+}
 
 
 def deploy_lottery(daccount=False):

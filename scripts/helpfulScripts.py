@@ -14,8 +14,9 @@ FORKED_CHAIN_NAMES = ["mainnet-fork"]
 
 CONTRACT_NAME_TO_MOCK = {
     "AggregatorV3Interface": project.MockV3Aggregator,
-    # "VRFCoordinatorV2": project.VRFCoordinatorV2Mock,
-    # "LinkToken": project.LinkToken,
+    "VRFCoordinator": project.VRFCoordinatorMock,
+    "VRFV2WrapperInterface": project.VRFWrapperMock,
+    "LinkToken": project.LinkToken,
 }
 
 ## Mock Contract Initial Values
@@ -49,19 +50,22 @@ def print18(returnInt):
         print("Formatting did not work out")
 
 
-def deploy_mocks():
+def deploy_mocks(contract_name):
     """
     Deploys mock contracts to a local network. Should take care to make sure you
     only call this function when running on a local network.
     """
+    mock_contract_type = CONTRACT_NAME_TO_MOCK[contract_name]
+
     print(f"The active network is {networks.active_provider.network.name}")
-    print("Deploying mock...")
+    print(f"Deploying mock {contract_name} contract")
     account = get_account()
-    print("Deploying mock v3 aggregator...")
-    mock_price_feed = account[0].deploy(
-        project.MockV3Aggregator, DECIMALS, INITIAL_VALUE
-    )
-    print(f"Deployed to {mock_price_feed.address}")
+    # print("Deploying mock v3 aggregator...")
+    # mock_price_feed = account[0].deploy(
+    #     project.MockV3Aggregator, DECIMALS, INITIAL_VALUE
+    # )
+    mock_contract = account[0].deploy(mock_contract_type, DECIMALS, INITIAL_VALUE)
+    print(f"Deployed to {mock_contract.address}")
     print("Mock Deployed!")
 
 
@@ -88,8 +92,9 @@ def get_or_deploy_contract(contract_name):
         # or networks.active_provider.chain_id == 31337
     ):
         if len(mock_contract_type.deployments) <= 0:
-            deploy_mocks()
+            deploy_mocks(contract_name)
         contract = mock_contract_type.deployments[-1]
+        address = contract.address
     else:
         try:
             ecosystem = networks.active_provider.network.ecosystem.name
@@ -101,13 +106,15 @@ def get_or_deploy_contract(contract_name):
                 ][chain_name]
                 if contract_and_address["contract_type"] == contract_name
             ]
-            contract = mock_contract_type.at(contract_addresses[0])
+            # contract = mock_contract_type.at(contract_addresses[0])
+            address = contract_addresses[0]
 
         except KeyError:
             raise Exception(
                 f"{networks.active_provider.network.name} address not found, perhaps you should add it to the ape-config.yaml or CONTRACT_NAME_TO_MOCK in the helper_functions.py file?"
             )
-    return contract
+    # return contract
+    return address
 
 
 def main():

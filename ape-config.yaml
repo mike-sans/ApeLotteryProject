@@ -6,7 +6,7 @@ plugins:
 - name: test
 
 ethereum:
-  default_network: mainnet-fork
+  default_network: sepolia
   mainnet: 
     default_provider: infura
   mainnet_fork:
@@ -43,18 +43,30 @@ deployments:
     mainnet:
       - contract_type: AggregatorV3Interface
         address: "0x5f4ec3df9cbd43714fe2740f5e3616155c5b8419"
+      - contract_type: VRFV2WrapperInterface # this is for the direct funding method of Chainlink's VRF
+        address: "0x5A861794B927983406fCE1D062e00b9368d97Df6"
+      - contract_type: VRFCoordinator # this is for the subscription method of Chainlink's VRF
+        address: "0x271682DEB8C4E0901D1a1550aD2e64D568E69909"
+      - contract_type: LinkToken
+        address: "0x514910771AF9Ca656af840dff83E8264EcF986CA"
     mainnet-fork:
       - contract_type: AggregatorV3Interface
         address: "0x5f4ec3df9cbd43714fe2740f5e3616155c5b8419"
+      - contract_type: VRFV2WrapperInterface
+        address: "0x5A861794B927983406fCE1D062e00b9368d97Df6"
+      - contract_type: VRFCoordinator
+        address: "0x271682DEB8C4E0901D1a1550aD2e64D568E69909"
+      - contract_type: LinkToken
+        address: "0x514910771AF9Ca656af840dff83E8264EcF986CA"
     sepolia:
       - contract_type: AggregatorV3Interface
         address: "0x694AA1769357215DE4FAC081bf1f309aDC325306"
-      - contract_type: vrf_coordinator
+      - contract_type: VRFV2WrapperInterface
+        address: "0xab18414CD93297B0d12ac29E63Ca20f515b3DB46" 
+      - contract_type: VRFCoordinator 
         address: "0x8103B0A8A00be2DDC778e6e7eaa21791Cd364625"
-      - contract_type: link_token
+      - contract_type: LinkToken
         address: "0x779877A7B0D9E8603169DdbD7836e478b4624789"
-      - contract_type: keyhash
-        address: "0x474e34a077df58807dbe9c96d3c009b23b3c6d0cce433e59bbf5b34f823bc56c"
     
 test:
   mnemonic: test test test test test test test test test test test junk
