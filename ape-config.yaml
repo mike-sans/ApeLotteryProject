@@ -4,9 +4,13 @@ plugins:
 - name: infura
 - name: networks
 - name: test
+- name: ganache
+
+solidity:
+  version: 0.8.23
 
 ethereum:
-  default_network: sepolia
+  default_network: local
   mainnet: 
     default_provider: infura
   mainnet_fork:
@@ -16,7 +20,8 @@ ethereum:
   sepolia:
     default_provider: infura
   local:
-    default_provider: test
+    # default_provider: test
+    default_provider: ganache
 
 foundry:
   host: http://localhost:8545
@@ -24,6 +29,12 @@ foundry:
     ethereum:
       mainnet:
         upstream_provider: infura
+
+ganache:
+  server:
+    port: 8545
+  # test:
+
 
 solidity: 
   import_remapping:
@@ -69,5 +80,6 @@ deployments:
         address: "0x779877A7B0D9E8603169DdbD7836e478b4624789"
     
 test:
-  mnemonic: test test test test test test test test test test test junk
-  number_of_accounts: 5
+  # mnemonic: test test test test test test test test test test test junk
+  mnemonic: car casual program tourist aerobic broccoli link hamster resemble collect put october
+  number_of_accounts: 10

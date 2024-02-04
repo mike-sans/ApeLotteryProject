@@ -6,6 +6,7 @@ __all__ = [
     "get_or_deploy_contract",
     "LOCAL_CHAIN_NAMES",
     "FORKED_CHAIN_NAMES",
+    "CONTRACT_NAME_TO_DEFAULTS",
 ]
 
 # All local chains across "ecosystems" have the same name
@@ -14,18 +15,34 @@ FORKED_CHAIN_NAMES = ["mainnet-fork"]
 
 CONTRACT_NAME_TO_MOCK = {
     "AggregatorV3Interface": project.MockV3Aggregator,
-    "VRFCoordinator": project.VRFCoordinatorMock,
-    "VRFV2Wrapper": project.VRFWrapperMock,
-    "LinkToken": project.LinkToken,
+    "VRFCoordinator": project.VRFCoordinatorV2Mock,
+    "LinkToken": project.MockLinkToken,
+    "VRFV2Wrapper": project.VRFV2WrapperMock,
 }
 
 ## Mock Contract Initial Values
+# Default for Aggregator
 DECIMALS = 8
 INITIAL_VALUE = (
     2000_00000000  # actual value multiplied by 10**8, similar to how chainlink gives it
 )
+
+
+# Default for VRFCoordinator
 BASE_FEE = 1_00000000000000000  # 0.1
 GAS_PRICE_LINK = 1_000000000  # Some value calculated depending on the Layer 1 cost and Link. This is 1e9
+
+# Default for VRFV2Wrapper
+LINK_ETH_PRICE = 771000  # (0.007710)
+
+
+# Mock Default Values
+CONTRACT_NAME_TO_DEFAULTS = {
+    "AggregatorV3Interface": [DECIMALS, INITIAL_VALUE],
+    "VRFCoordinator": [BASE_FEE, GAS_PRICE_LINK],
+    "LinkToken": [],
+    "VRFV2Wrapper": [LINK_ETH_PRICE],
+}
 
 
 def get_account():
@@ -50,7 +67,7 @@ def print18(returnInt):
         print("Formatting did not work out")
 
 
-def deploy_mocks(contract_name):
+def deploy_mocks(contract_name, *args):
     """
     Deploys mock contracts to a local network. Should take care to make sure you
     only call this function when running on a local network.
@@ -60,16 +77,14 @@ def deploy_mocks(contract_name):
     print(f"The active network is {networks.active_provider.network.name}")
     print(f"Deploying mock {contract_name} contract")
     account = get_account()
-    # print("Deploying mock v3 aggregator...")
-    # mock_price_feed = account[0].deploy(
-    #     project.MockV3Aggregator, DECIMALS, INITIAL_VALUE
-    # )
-    mock_contract = account[0].deploy(mock_contract_type, DECIMALS, INITIAL_VALUE)
+
+    # mock_contract = account[0].deploy(mock_contract_type, DECIMALS, INITIAL_VALUE)
+    mock_contract = account[0].deploy(mock_contract_type, *args)
     print(f"Deployed to {mock_contract.address}")
     print("Mock Deployed!")
 
 
-def get_or_deploy_contract(contract_name):
+def get_or_deploy_contract(contract_name, *args):
     """If you want to use this function, go to the ape config and add a new entry for
     the contract that you want to be able to 'get'. Then add an entry in the variable 'CONTRACT_NAME_TO_MOCK'.
     You'll see examples like the 'price_feed'.
@@ -85,6 +100,9 @@ def get_or_deploy_contract(contract_name):
         Returns:
             contract
     """
+    if () == args:
+        args = CONTRACT_NAME_TO_DEFAULTS[contract_name]
+
     mock_contract_type = CONTRACT_NAME_TO_MOCK[contract_name]
     if (
         networks.active_provider.network.name
@@ -92,22 +110,27 @@ def get_or_deploy_contract(contract_name):
         # or networks.active_provider.chain_id == 31337
     ):
         if len(mock_contract_type.deployments) <= 0:
-            deploy_mocks(contract_name)
+            deploy_mocks(contract_name, *args)
         contract = mock_contract_type.deployments[-1]
         address = contract.address
     else:
         try:
             ecosystem = networks.active_provider.network.ecosystem.name
             chain_name = networks.active_provider.network.name
-            contract_addresses = [
-                contract_and_address["address"]
-                for contract_and_address in config.get_config("deployments").root[
-                    ecosystem
-                ][chain_name]
-                if contract_and_address["contract_type"] == contract_name
-            ]
-            # contract = mock_contract_type.at(contract_addresses[0])
-            address = contract_addresses[0]
+            # contract_addresses = [
+            #     contract_and_address["address"]
+            #     for contract_and_address in config.get_config("deployments").root[
+            #         ecosystem
+            #     ][chain_name]
+            #     if contract_and_address["contract_type"] == contract_name
+            # ]
+            for deployedContracts in config.get_config("deployments").root[ecosystem][
+                chain_name
+            ]:
+                if deployedContracts["contract_type"] == contract_name:
+                    contract_address = deployedContracts["address"]
+            # address = contract_addresses[0]
+            address = contract_address
 
         except KeyError:
             raise Exception(

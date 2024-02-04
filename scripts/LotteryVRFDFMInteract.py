@@ -19,14 +19,18 @@ def deploy_lottery(daccount=False):
 
     # this will get info from chainlink or deploy a mock chain if in a test network
     aggregatorAddress = get_or_deploy_contract("AggregatorV3Interface")
-    linkTokenAddress = get_or_deploy_contract("")
+    linkTokenAddress = get_or_deploy_contract("LinkToken")
     vrfWrapperAddress = get_or_deploy_contract("VRFV2WrapperInterface")
 
     publishStat = True
     if networks.active_provider.network.name in ("local", "mainnet-fork"):
         publishStat = False
     lottery = project.Lottery.deploy(
-        aggregatorAddress, sender=daccount, publish=publishStat
+        aggregatorAddress,
+        linkTokenAddress,
+        vrfWrapperAddress,
+        sender=daccount,
+        publish=publishStat,
     )
     print(f"Contract deployed to {lottery.address}")
     return lottery

@@ -2,10 +2,10 @@
 // pragma solidity >=0.6.6 <0.9.0;
 pragma solidity ^0.8;
 
-import "@chainlink/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
-import "@chainlink/src/v0.8/vrf/VRFV2WrapperConsumerBase.sol";
+import "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
+import "@chainlink/contracts/src/v0.8/vrf/VRFV2WrapperConsumerBase.sol";
 
-contract LotteryVRF is VRFV2WrapperConsumerBase {
+contract LotteryVRFSM is VRFV2WrapperConsumerBase {
     // probably better to not have this array be payable, just to be extra safe
     address[] public players;
     address payable public winner;
