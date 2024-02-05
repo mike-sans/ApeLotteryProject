@@ -171,10 +171,16 @@ contract VRFCoordinatorV2Mock is VRFCoordinatorV2Interface, ConfirmedOwner {
         (bool success, ) = _consumer.call{gas: req.callbackGasLimit}(callReq);
         s_config.reentrancyLock = false;
 
+        // VRFConsumerBaseV2 v = VRFConsumerBaseV2(_consumer);
+        // s_config.reentrancyLock = true;
+        // v.rawFulfillRandomWords(_requestId, _words);
+        // s_config.reentrancyLock = false;
+
         uint96 payment = uint96(
             BASE_FEE + ((startGas - gasleft()) * GAS_PRICE_LINK)
         );
         if (s_subscriptions[req.subId].balance < payment) {
+        // if (s_subscriptions[req.subId].balance < 0) {
             revert InsufficientBalance();
         }
         s_subscriptions[req.subId].balance -= payment;
@@ -189,6 +195,8 @@ contract VRFCoordinatorV2Mock is VRFCoordinatorV2Interface, ConfirmedOwner {
      * @param _amount the amount to fund
      */
     function fundSubscription(uint64 _subId, uint96 _amount) public {
+        
+        
         if (s_subscriptions[_subId].owner == address(0)) {
             revert InvalidSubscription();
         }

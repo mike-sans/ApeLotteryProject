@@ -6,12 +6,11 @@ import "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.so
 import "@chainlink/contracts/src/v0.8/vrf/VRFV2WrapperConsumerBase.sol";
 
 contract LotteryVRFDFM is VRFV2WrapperConsumerBase {
-    // probably better to not have this array be payable, just to be extra safe
     address[] public players;
     address payable public winner;
     address public owner;
     uint256 public usdEntryFee = uint256(50 * (10 ** 18));
-    uint256 public lotteryRound = 1;
+    uint256 public lotteryRound;
     AggregatorV3Interface public priceFeed;
     // LinkTokenInterface public link;
 
@@ -24,9 +23,9 @@ contract LotteryVRFDFM is VRFV2WrapperConsumerBase {
     OPEN_STATE public openStatus = OPEN_STATE.CLOSED;
 
     // Variables for VRF
-    uint32 callbackGasLimit = 100000;
-    uint16 requestConfirmations = 3;
-    uint32 numWords = 1;
+    uint32 public callbackGasLimit = 1000000;
+    uint16 public requestConfirmations = 3;
+    uint32 public numWords = 1;
     event RequestSent(uint256 requestId, uint32 numWords);
     event RequestFulfilled(
         uint256 requestId,
@@ -45,6 +44,10 @@ contract LotteryVRFDFM is VRFV2WrapperConsumerBase {
     // past requests Id.
     uint256[] public requestIds;
     uint256 public lastRequestId;
+
+    // past random numbers
+    uint256 public randNumber;
+    uint256 public winnerIndex;
 
     // End of VRF variables
 
@@ -79,10 +82,11 @@ contract LotteryVRFDFM is VRFV2WrapperConsumerBase {
 
     modifier openLottery() {
         require(openStatus == OPEN_STATE.OPEN, "Lottery is not open!");
-        require(
-            LINK.balanceOf(msg.sender) >=
-                VRF_V2_WRAPPER.calculateRequestPrice(callbackGasLimit)
-        );
+        _;
+    }
+
+    modifier enoughLink() {
+        require(LINK.balanceOf(address(this)) >= VRF_V2_WRAPPER.calculateRequestPrice(callbackGasLimit), "Contract needs more link before you can open lottery!");
         _;
     }
 
@@ -107,6 +111,10 @@ contract LotteryVRFDFM is VRFV2WrapperConsumerBase {
         _;
     }
 
+    function getContractLinkBalance() public view returns(uint256) {
+        return LINK.balanceOf(address(this));
+    }
+
     function getConversionRate(
         uint256 ethAmount
     ) public view returns (uint256) {
@@ -120,8 +128,11 @@ contract LotteryVRFDFM is VRFV2WrapperConsumerBase {
         return uint256(answer * (10 ** 10));
     }
 
-    function startLottery() public onlyOwner cleanSlate {
+    function startLottery() public onlyOwner cleanSlate enoughLink{
         openStatus = OPEN_STATE.OPEN;
+        lotteryRound += 1;
+        players = new address[](0);
+        winner = payable(address(0));
     }
 
     function enter() public payable sufficientFunds openLottery {
@@ -163,15 +174,20 @@ contract LotteryVRFDFM is VRFV2WrapperConsumerBase {
             _randomWords,
             s_requests[_requestId].paid
         );
-        calculateWinner(_requestId);
-    }
-
-    function calculateWinner(uint256 _requestId) internal calculating {
+        // calculateWinner(_requestId);
+        // Calculating winner
         openStatus = OPEN_STATE.PENDING_WINNER_WITHDRAW;
-        uint256 randNumber = s_requests[_requestId].randomWords[0];
-        uint256 winnerIndex = randNumber % players.length;
+        randNumber = s_requests[_requestId].randomWords[0];
+        winnerIndex = randNumber % players.length;
         winner = payable(players[winnerIndex]);
     }
+
+    // function calculateWinner(uint256 _requestId) internal calculating {
+    //     openStatus = OPEN_STATE.PENDING_WINNER_WITHDRAW;
+    //     uint256 randNumber = s_requests[_requestId].randomWords[0];
+    //     uint256 winnerIndex = randNumber % players.length;
+    //     winner = payable(players[winnerIndex]);
+    // }
 
     function winnerWithdraw() external onlyWinner pendingWithdraw {
         openStatus = OPEN_STATE.CLOSED;

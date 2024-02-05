@@ -10,11 +10,12 @@ solidity:
   version: 0.8.23
 
 ethereum:
-  default_network: local
+  default_network: mainnet-fork
   mainnet: 
     default_provider: infura
   mainnet_fork:
-    default_provider: foundry
+    # default_provider: foundry
+    default_provider: ganache
   goerli:
     default_provider: infura
   sepolia:
@@ -52,7 +53,7 @@ dependencies:
 deployments:
   ethereum:
     mainnet:
-      - contract_type: AggregatorV3Interface
+      - contract_type: AggregatorV3ETHUSD
         address: "0x5f4ec3df9cbd43714fe2740f5e3616155c5b8419"
       - contract_type: VRFV2Wrapper # this is for the direct funding method of Chainlink's VRF
         address: "0x5A861794B927983406fCE1D062e00b9368d97Df6"
@@ -61,7 +62,7 @@ deployments:
       - contract_type: LinkToken
         address: "0x514910771AF9Ca656af840dff83E8264EcF986CA"
     mainnet-fork:
-      - contract_type: AggregatorV3Interface
+      - contract_type: AggregatorV3ETHUSD
         address: "0x5f4ec3df9cbd43714fe2740f5e3616155c5b8419"
       - contract_type: VRFV2Wrapper
         address: "0x5A861794B927983406fCE1D062e00b9368d97Df6"
@@ -70,7 +71,7 @@ deployments:
       - contract_type: LinkToken
         address: "0x514910771AF9Ca656af840dff83E8264EcF986CA"
     sepolia:
-      - contract_type: AggregatorV3Interface
+      - contract_type: AggregatorV3ETHUSD
         address: "0x694AA1769357215DE4FAC081bf1f309aDC325306"
       - contract_type: VRFV2Wrapper
         address: "0xab18414CD93297B0d12ac29E63Ca20f515b3DB46" 

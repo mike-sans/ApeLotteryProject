@@ -6,11 +6,11 @@ import {IERC677Receiver} from "@chainlink/contracts/src/v0.8/shared/interfaces/I
 contract MockLinkToken {
     uint256 private constant TOTAL_SUPPLY = 1_000_000_000 * 1e18;
 
+    mapping(address => uint256) public balances;
+
     constructor() {
         balances[msg.sender] = TOTAL_SUPPLY;
     }
-
-    mapping(address => uint256) public balances;
 
     function totalSupply() external pure returns (uint256 totalTokensIssued) {
         return TOTAL_SUPPLY; // 1 billion LINK -> 1e27 Juels

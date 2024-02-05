@@ -246,7 +246,8 @@ contract VRFV2WrapperMock is
         return
             _calculateRequestPrice(
                 _callbackGasLimit,
-                tx.gasprice,
+                // tx.gasprice,
+                2*10**9,
                 weiPerUnitLink
             );
     }
@@ -296,6 +297,7 @@ contract VRFV2WrapperMock is
 
         return feeWithFlatFee;
     }
+
 
     /**
      * @notice onTokenTransfer is called by LinkToken upon payment for a VRF request.
