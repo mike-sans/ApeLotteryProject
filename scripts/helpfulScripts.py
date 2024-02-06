@@ -120,6 +120,8 @@ def get_or_deploy_contract(contract_name, *args):
     ):
         if len(mock_contract_type.deployments) <= 0:
             deploy_mocks(contract_name, *args)
+        else:
+            print("Mock contract {contract_name} retrieved!")
         contract = mock_contract_type.deployments[-1]
         # address = contract.address
     else:

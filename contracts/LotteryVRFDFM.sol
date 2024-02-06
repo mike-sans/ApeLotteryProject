@@ -135,8 +135,10 @@ contract LotteryVRFDFM is VRFV2WrapperConsumerBase {
         winner = payable(address(0));
     }
 
-    function enter() public payable sufficientFunds openLottery {
+    function enter() public payable sufficientFunds openLottery returns(uint256) {
+        uint256 playerLength = players.length;
         players.push(msg.sender);
+        return playerLength;
     }
 
     function endLottery()

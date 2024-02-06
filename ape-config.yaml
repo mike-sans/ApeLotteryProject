@@ -10,7 +10,7 @@ solidity:
   version: 0.8.23
 
 ethereum:
-  default_network: mainnet-fork
+  default_network: local
   mainnet: 
     default_provider: infura
   mainnet_fork:
@@ -22,7 +22,8 @@ ethereum:
     default_provider: infura
   local:
     # default_provider: test
-    default_provider: ganache
+    # default_provider: ganache
+    default_provider: foundry
 
 foundry:
   host: http://localhost:8545
