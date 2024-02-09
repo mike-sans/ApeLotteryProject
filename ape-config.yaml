@@ -35,7 +35,6 @@ foundry:
 ganache:
   server:
     port: 8545
-  # test:
 
 
 solidity: 
@@ -56,9 +55,9 @@ deployments:
     mainnet:
       - contract_type: AggregatorV3ETHUSD
         address: "0x5f4ec3df9cbd43714fe2740f5e3616155c5b8419"
-      - contract_type: VRFV2Wrapper # this is for the direct funding method of Chainlink's VRF
+      - contract_type: VRFV2Wrapper
         address: "0x5A861794B927983406fCE1D062e00b9368d97Df6"
-      - contract_type: VRFCoordinator # this is for the subscription method of Chainlink's VRF
+      - contract_type: VRFCoordinator
         address: "0x271682DEB8C4E0901D1a1550aD2e64D568E69909"
       - contract_type: LinkToken
         address: "0x514910771AF9Ca656af840dff83E8264EcF986CA"

@@ -66,16 +66,17 @@ def start_lottery(oaccount=False, linkTransfer=True):
     linkTokenContract = get_or_deploy_contract("LinkToken")
 
     if linkTransfer:
-        linkRequired = vrfWrapperContract.calculateRequestPrice(
-            lottery.callbackGasLimit()
-        )
+        # linkRequired = vrfWrapperContract.calculateRequestPrice(
+        #     lottery.callbackGasLimit()
+        # )
+        linkRequired = lottery.linkNeeded()
         tx = linkTokenContract.transfer(lottery.address, linkRequired, sender=oaccount)
         tx.await_confirmations()
 
-    # tx = lottery.startLottery(sender=oaccount)
-    tx = lottery.enoughLink2(sender=oaccount)
-    print("hello hello hello")
-    print(tx.return_value)
+    tx = lottery.startLottery(sender=oaccount)
+    # tx = lottery.enoughLink2(sender=oaccount)
+    # print("hello hello hello")
+    # print(tx.return_value)
     # tx.await_confirmations()
     print(f"Contract entered, txn receipt:{tx}")
     # return lottery.openStatus()

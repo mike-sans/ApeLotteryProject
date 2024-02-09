@@ -49,9 +49,10 @@ contract LotteryVRFDFM is VRFV2WrapperConsumerBase {
     uint256 public randNumber;
     uint256 public winnerIndex;
 
+    // The amount of link needed to 
+    uint256 public linkNeeded;
+
     // End of VRF variables
-    uint256 public placeA;
-    uint256 public placeB;
 
     constructor(
         address _priceFeed,
@@ -62,6 +63,7 @@ contract LotteryVRFDFM is VRFV2WrapperConsumerBase {
         // Do I need to do this? I think I might be able to reuse LINK from the base contract
         // link = LinkTokenInterface(_link);
         owner = msg.sender;
+        linkNeeded = (VRF_V2_WRAPPER.calculateRequestPrice(callbackGasLimit) * 12) / 10;
     }
 
     modifier onlyOwner() {
@@ -92,12 +94,6 @@ contract LotteryVRFDFM is VRFV2WrapperConsumerBase {
         _;
     }
 
-    function enoughLink2() external returns(uint256, uint256){
-        placeA = LINK.balanceOf(address(this));
-        placeB = VRF_V2_WRAPPER.calculateRequestPrice(callbackGasLimit);
-        return (placeA, placeB);
-    }
-
     modifier calculating() {
         require(
             openStatus == OPEN_STATE.CALCULATING_WINNER,
@@ -118,7 +114,7 @@ contract LotteryVRFDFM is VRFV2WrapperConsumerBase {
         );
         _;
     }
-
+    
     function getContractLinkBalance() public view returns(uint256) {
         return LINK.balanceOf(address(this));
     }
