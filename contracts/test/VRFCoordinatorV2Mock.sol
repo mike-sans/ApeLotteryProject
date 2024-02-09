@@ -23,14 +23,16 @@ contract VRFCoordinatorV2Mock is VRFCoordinatorV2Interface, ConfirmedOwner {
     error InvalidRandomWords();
     error Reentrant();
 
+    // uint32 numWords,
+    // uint64 indexed subId,
     event RandomWordsRequested(
         bytes32 indexed keyHash,
         uint256 requestId,
         uint256 preSeed,
-        uint64 indexed subId,
+        uint64 subId,
         uint16 minimumRequestConfirmations,
         uint32 callbackGasLimit,
-        uint32 numWords,
+        uint32 indexed numWords,
         address indexed sender
     );
     event RandomWordsFulfilled(

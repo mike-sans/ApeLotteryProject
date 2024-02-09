@@ -10,7 +10,7 @@ solidity:
   version: 0.8.23
 
 ethereum:
-  default_network: local
+  default_network: sepolia
   mainnet: 
     default_provider: infura
   mainnet_fork:

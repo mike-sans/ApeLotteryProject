@@ -50,6 +50,8 @@ contract LotteryVRFDFM is VRFV2WrapperConsumerBase {
     uint256 public winnerIndex;
 
     // End of VRF variables
+    uint256 public placeA;
+    uint256 public placeB;
 
     constructor(
         address _priceFeed,
@@ -88,6 +90,12 @@ contract LotteryVRFDFM is VRFV2WrapperConsumerBase {
     modifier enoughLink() {
         require(LINK.balanceOf(address(this)) >= VRF_V2_WRAPPER.calculateRequestPrice(callbackGasLimit), "Contract needs more link before you can open lottery!");
         _;
+    }
+
+    function enoughLink2() external returns(uint256, uint256){
+        placeA = LINK.balanceOf(address(this));
+        placeB = VRF_V2_WRAPPER.calculateRequestPrice(callbackGasLimit);
+        return (placeA, placeB);
     }
 
     modifier calculating() {
@@ -135,10 +143,10 @@ contract LotteryVRFDFM is VRFV2WrapperConsumerBase {
         winner = payable(address(0));
     }
 
-    function enter() public payable sufficientFunds openLottery returns(uint256) {
-        uint256 playerLength = players.length;
+    function enter() public payable sufficientFunds openLottery{
+        // uint256 playerLength = players.length;
         players.push(msg.sender);
-        return playerLength;
+        // return playerLength;
     }
 
     function endLottery()
@@ -168,6 +176,7 @@ contract LotteryVRFDFM is VRFV2WrapperConsumerBase {
         uint256 _requestId,
         uint256[] memory _randomWords
     ) internal override calculating {
+        openStatus = OPEN_STATE.PENDING_WINNER_WITHDRAW;
         require(s_requests[_requestId].paid > 0, "request not found");
         s_requests[_requestId].fulfilled = true;
         s_requests[_requestId].randomWords = _randomWords;
@@ -176,20 +185,13 @@ contract LotteryVRFDFM is VRFV2WrapperConsumerBase {
             _randomWords,
             s_requests[_requestId].paid
         );
-        // calculateWinner(_requestId);
+        
         // Calculating winner
-        openStatus = OPEN_STATE.PENDING_WINNER_WITHDRAW;
         randNumber = s_requests[_requestId].randomWords[0];
         winnerIndex = randNumber % players.length;
         winner = payable(players[winnerIndex]);
     }
 
-    // function calculateWinner(uint256 _requestId) internal calculating {
-    //     openStatus = OPEN_STATE.PENDING_WINNER_WITHDRAW;
-    //     uint256 randNumber = s_requests[_requestId].randomWords[0];
-    //     uint256 winnerIndex = randNumber % players.length;
-    //     winner = payable(players[winnerIndex]);
-    // }
 
     function winnerWithdraw() external onlyWinner pendingWithdraw {
         openStatus = OPEN_STATE.CLOSED;
@@ -212,6 +214,10 @@ contract LotteryVRFDFM is VRFV2WrapperConsumerBase {
         return (request.paid, request.fulfilled, request.randomWords);
     }
 
+    function getPlayerAmount() external view returns(uint256) {
+        return players.length;
+    }
+
     function getWinner() external view returns (string memory, address) {
         if (winner == address(0)) {
             return (
@@ -221,6 +227,10 @@ contract LotteryVRFDFM is VRFV2WrapperConsumerBase {
         } else {
             return ("The winner of this round was: ", winner);
         }
+    }
+
+    function getLinkBalance() external view returns (uint256) {
+        return LINK.balanceOf(address(this));
     }
 
     function withdrawLink() public onlyOwner cleanSlate {

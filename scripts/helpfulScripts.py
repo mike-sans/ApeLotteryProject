@@ -61,8 +61,8 @@ def get_account():
         for i in range(accountnum):
             account.append(accounts.test_accounts[i])
     else:
-        account.append(accounts.load("myAccount"))
         account.append(accounts.load("real"))
+        account.append(accounts.load("myAccount"))
         account.append(accounts.load("real2"))
         # etc.
     return account
